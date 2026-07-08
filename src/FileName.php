@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bifrost\DataTypes\Filesystem;
+namespace Elavora\Api\DataTypes\Filesystem;
 
-use Bifrost\DataTypes\AbstractDataType;
+use Elavora\Api\DataTypes\AbstractDataType;
 
 final readonly class FileName extends AbstractDataType
 {
