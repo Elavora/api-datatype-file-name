@@ -21,6 +21,21 @@ final readonly class FileName extends AbstractDataType
             return false;
         }
 
-        return preg_match('/^[^\\/:*?"<>|]+$/', $value) === 1;
+        if (
+            str_ends_with($value, ' ')
+            || preg_match('/[\x00-\x1F\x7F]/', $value) === 1
+            || strpbrk($value, '/\\:*?"<>|') !== false
+        ) {
+            return false;
+        }
+
+        $basename = explode('.', $value, 2)[0];
+
+        return !self::isReservedDeviceName($basename);
+    }
+
+    private static function isReservedDeviceName(string $basename): bool
+    {
+        return preg_match('/^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/i', $basename) === 1;
     }
 }

@@ -1,47 +1,29 @@
 # Guia de uso
 
-DataType de nome de arquivo para aplicacoes Elavora API.
-
-## Instalacao
-
-```bash
-composer require elavora/api-datatype-file-name
-```
-
-## Quando usar
-
-- Validar e normalizar valores antes de chegar na regra de negocio.
-- Evitar passar strings soltas entre services, DTOs e persistencia.
-- Reutilizar a mesma validacao em controllers, comandos e testes.
-
-## Exemplo rapido
+`FileName` aceita strings de 1 a 255 bytes e preserva o valor informado.
 
 ```php
 use Elavora\Api\DataTypes\Filesystem\FileName;
 
-$valor = new FileName('exemplo');
-$normalizado = $valor->value();
+$fileName = FileName::from('relatorio final.pdf');
+
+echo $fileName->value(); // relatorio final.pdf
 ```
 
-## Principais pontos de entrada
+Sao rejeitados:
 
-- `Elavora\Api\DataTypes\Filesystem\FileName`
+- caminhos e os caracteres `\ / : * ? " < > |`;
+- nomes iniciados ou terminados por ponto;
+- controles ASCII, DEL, espaco final e nomes de dispositivo do Windows;
+- `.` e `..`.
 
-## Dependencias de runtime
+Unicode valido e espacos internos sao aceitos.
 
-- `elavora/api-datatype-core` `^0.1`
+## Validacao do pacote
 
-## Validacao no projeto consumidor
-
-Depois de instalar o pacote, rode os testes da aplicacao consumidora. Para uma verificacao isolada do pacote, use container:
+Execute os comandos a partir da raiz do clone:
 
 ```bash
-docker run --rm -v "${PWD}:/workspace" -w "/workspace/api-datatype-file-name" composer:2 composer validate --strict --no-check-publish
-docker run --rm -v "${PWD}:/workspace" -w "/workspace/api-datatype-file-name" composer:2 sh -lc "find . \\( -path ./.git -o -path ./vendor \\) -prune -o -name '*.php' -print0 | xargs -0 -r -n1 php -l"
+docker run --rm -v "${PWD}:/workspace" -w /workspace composer:2 composer update --no-interaction --no-progress --prefer-dist
+docker run --rm -v "${PWD}:/workspace" -w /workspace composer:2 composer check
 ```
-
-## Observacoes
-
-- Mantenha regras de produto fora deste pacote.
-- Prefira configurar extensoes no bootstrap da aplicacao.
-- Instale apenas os modulos que a aplicacao realmente usa.
