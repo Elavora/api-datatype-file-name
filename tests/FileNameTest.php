@@ -95,12 +95,12 @@ final class FileNameTest extends TestCase
         self::assertFalse(FileName::isValid(new \stdClass()));
     }
 
-    public function testConstructorIsNotPublic(): void
+    public function testConstructorIsPublic(): void
     {
         $constructor = (new \ReflectionClass(FileName::class))->getConstructor();
 
         self::assertNotNull($constructor);
-        self::assertFalse($constructor->isPublic());
+        self::assertTrue($constructor->isPublic());
     }
 
     public function testClassIsFinalReadonly(): void
