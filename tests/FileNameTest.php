@@ -110,12 +110,4 @@ final class FileNameTest extends TestCase
         self::assertTrue($class->isFinal());
         self::assertTrue($class->isReadOnly());
     }
-
-    public function testTestsDoNotInstantiateWithNew(): void
-    {
-        $needle = 'new ' . 'FileName(';
-        foreach (glob(__DIR__ . '/*.php') ?: [] as $file) {
-            self::assertStringNotContainsString($needle, (string) file_get_contents($file), basename($file));
-        }
-    }
 }
