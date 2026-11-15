@@ -78,7 +78,7 @@ final class FileNameTest extends TestCase
 
     public function testFromDoesNotTrimOrChangeCase(): void
     {
-        self::assertSame(' User.PNG ', new FileName(' User.PNG ')->value());
+        self::assertSame(' User.PNG ', (new FileName(' User.PNG '))->value());
     }
 
     #[DataProvider('invalidProvider')]
