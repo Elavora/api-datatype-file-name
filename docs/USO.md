@@ -19,7 +19,7 @@ composer require elavora/api-datatype-file-name
 ```php
 use Elavora\Api\DataTypes\Filesystem\FileName;
 
-$nome = FileName::from('user.png');
+$nome = new FileName('user.png');
 
 $nome->value();                     // 'user.png'
 (string) $nome;                     // 'user.png'
@@ -28,7 +28,7 @@ FileName::isValid('user.png');      // true
 FileName::isValid('.env');          // false
 ```
 
-O construtor não é público: crie sempre por `FileName::from()`.
+O construtor não é público: crie sempre por `new FileName()`.
 
 ## Versão e compatibilidade
 
@@ -45,7 +45,7 @@ ou superior.
 
 **Quebra de compatibilidade:** no `elavora/api-datatype-core` 2 o construtor de `AbstractDataType` é
 `final protected`, então `new FileName('user.png')` deixa de funcionar fora da própria classe. Troque por
-`FileName::from('user.png')`. `FileName::isValid()` e `value()` continuam iguais.
+`new FileName('user.png')`. `FileName::isValid()` e `value()` continuam iguais.
 
 **Pacotes dependentes:** `elavora/api-datatype-file-path` e `elavora/api-datatype-storage-key` usam este pacote. Depois
 do release da `1.0.0`, eles devem passar a exigir `elavora/api-datatype-file-name` `^1.0`.
@@ -66,7 +66,7 @@ O `composer.json` do pacote deve ter:
 
 ## Criação e entrada inválida
 
-`Elavora\Api\DataTypes\Filesystem\FileName::from(mixed $value): static` valida o valor com `isValid()` e devolve um
+`Elavora\Api\DataTypes\Filesystem\new FileName(mixed $value): static` valida o valor com `isValid()` e devolve um
 `FileName` com o valor recebido, sem alteração. Se o valor for inválido, lança `\InvalidArgumentException` com a
 mensagem `Valor invalido para Elavora\Api\DataTypes\Filesystem\FileName.`
 
@@ -74,7 +74,7 @@ mensagem `Valor invalido para Elavora\Api\DataTypes\Filesystem\FileName.`
 use Elavora\Api\DataTypes\Filesystem\FileName;
 
 try {
-    FileName::from('.env');
+    new FileName('.env');
 } catch (\InvalidArgumentException $e) {
     echo $e->getMessage(); // Valor invalido para Elavora\Api\DataTypes\Filesystem\FileName.
 }
@@ -126,7 +126,7 @@ Contraexemplo (comportamento que não vale mais): `new FileName('user.png')` fun
 
 ## Dependências de runtime
 
-- `elavora/api-datatype-core` `^2.0`
+- `elavora/api-datatype-core` `^3.0`
 
 ## Validação do pacote
 

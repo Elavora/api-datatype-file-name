@@ -15,11 +15,11 @@ use Elavora\Api\DataTypes\Filesystem\FileName;
 FileName::isValid('user.png'); // true
 FileName::isValid('.env');     // false
 
-$nome = FileName::from('user.png');
+$nome = new FileName('user.png');
 $nome->value(); // 'user.png'
 ```
 
-Entrada inválida em `FileName::from()` lança `InvalidArgumentException`.
+Entrada inválida em `new FileName()` lança `InvalidArgumentException`.
 
 Especificação completa, exemplos e validação local: [docs/USO.md](docs/USO.md).
 
@@ -32,11 +32,11 @@ composer require elavora/api-datatype-file-name
 Requisitos:
 
 - PHP 8.3 ou superior.
-- `elavora/api-datatype-core` `^2.0` (que traz o `elavora/api-framework` `^2.0`).
+- `elavora/api-datatype-core` `^3.0` (que traz o `elavora/api-framework` `^3.0`).
 
 Versão `1.0`: atualiza o pacote para o `elavora/api-datatype-core` 2.0, que substitui o `^0.1`, e passa a exigir
 PHP 8.3 ou superior. **Quebra:** o construtor deixa de ser público (no core 2 ele é `final protected`),
-então `new FileName(...)` não funciona mais; use `FileName::from(...)`. `isValid()` e `value()` não mudam.
+então `new FileName(...)` não funciona mais; use `new FileName(...)`. `isValid()` e `value()` não mudam.
 
 Este pacote é base de `elavora/api-datatype-file-path` e `elavora/api-datatype-storage-key`: depois do release da `1.0.0`,
 esses pacotes devem exigir `elavora/api-datatype-file-name` `^1.0`.

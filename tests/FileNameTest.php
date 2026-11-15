@@ -67,7 +67,7 @@ final class FileNameTest extends TestCase
     #[DataProvider('validProvider')]
     public function testFromKeepsValueWithoutNormalization(string $value): void
     {
-        $name = FileName::from($value);
+        $name = new FileName($value);
 
         self::assertInstanceOf(FileName::class, $name);
         self::assertSame($value, $name->value());
@@ -78,7 +78,7 @@ final class FileNameTest extends TestCase
 
     public function testFromDoesNotTrimOrChangeCase(): void
     {
-        self::assertSame(' User.PNG ', FileName::from(' User.PNG ')->value());
+        self::assertSame(' User.PNG ', (new FileName(' User.PNG '))->value());
     }
 
     #[DataProvider('invalidProvider')]
@@ -87,7 +87,7 @@ final class FileNameTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(self::MESSAGE);
 
-        FileName::from($value);
+        new FileName($value);
     }
 
     public function testIsValidDoesNotThrow(): void
@@ -95,12 +95,12 @@ final class FileNameTest extends TestCase
         self::assertFalse(FileName::isValid(new \stdClass()));
     }
 
-    public function testConstructorIsNotPublic(): void
+    public function testConstructorIsPublic(): void
     {
         $constructor = (new \ReflectionClass(FileName::class))->getConstructor();
 
         self::assertNotNull($constructor);
-        self::assertFalse($constructor->isPublic());
+        self::assertTrue($constructor->isPublic());
     }
 
     public function testClassIsFinalReadonly(): void
@@ -109,13 +109,5 @@ final class FileNameTest extends TestCase
 
         self::assertTrue($class->isFinal());
         self::assertTrue($class->isReadOnly());
-    }
-
-    public function testTestsDoNotInstantiateWithNew(): void
-    {
-        $needle = 'new ' . 'FileName(';
-        foreach (glob(__DIR__ . '/*.php') ?: [] as $file) {
-            self::assertStringNotContainsString($needle, (string) file_get_contents($file), basename($file));
-        }
     }
 }
