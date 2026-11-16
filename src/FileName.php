@@ -5,9 +5,25 @@ declare(strict_types=1);
 namespace Elavora\Api\DataTypes\Filesystem;
 
 use Elavora\Api\DataTypes\AbstractDataType;
+use Elavora\Api\Framework\Contracts\DescribesType;
 
-final readonly class FileName extends AbstractDataType
+final readonly class FileName extends AbstractDataType implements DescribesType
 {
+    /**
+     * Descreve o tipo no OPTIONS publico da API.
+     *
+     * @return array<string, mixed>
+     */
+    public static function documentedType(): array
+    {
+        return [
+            'type' => 'string',
+            'example' => 'user.png',
+            'description' => 'Nome de arquivo com 1 a 255 caracteres, sem os caracteres / : * ? " < > |, '
+                . 'sem comecar nem terminar com ponto e diferente de "." e "..".',
+        ];
+    }
+
     /**
      * Verifica se o valor e um nome de arquivo valido.
      */
@@ -21,6 +37,6 @@ final readonly class FileName extends AbstractDataType
             return false;
         }
 
-        return preg_match('/^[^\\/:*?"<>|]+$/', $value) === 1;
+        return preg_match('/^[^\/:*?"<>|]+$/', $value) === 1;
     }
 }
