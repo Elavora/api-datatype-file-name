@@ -124,6 +124,14 @@ Contraexemplo (comportamento que não vale mais): `new FileName('user.png')` fun
 
 - `Elavora\Api\DataTypes\Filesystem\FileName` (`final readonly`, herda de `Elavora\Api\DataTypes\AbstractDataType`)
 
+## Documentação do tipo (OPTIONS)
+
+`FileName` implementa `Elavora\Api\Framework\Contracts\DescribesType` e declara, via `documentedType()`, o que o
+OPTIONS público da API mostra para o campo:
+
+- `type`: `string`
+- `example`: `user.png`
+- `description`: de 1 a 255 caracteres, sem `/ : * ? " < > |`, sem começar nem terminar com ponto e diferente de `.` e `..`.
 ## Dependências de runtime
 
 - `elavora/api-datatype-core` `^4.0`
