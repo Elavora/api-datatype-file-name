@@ -19,7 +19,8 @@ $nome = new FileName('user.png');
 $nome->value(); // 'user.png'
 ```
 
-Entrada inválida em `new FileName()` lança `InvalidArgumentException`.
+Entrada inválida em `new FileName()` lança `InvalidArgumentException`. Nomes com caracteres de controle (NUL, LF, CR,
+TAB, DEL, C1), separadores de linha Unicode, marcas bidi de override ou UTF-8 malformado também são inválidos.
 
 Especificação completa, exemplos e validação local: [docs/USO.md](docs/USO.md).
 
