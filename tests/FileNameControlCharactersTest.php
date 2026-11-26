@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Elavora\Api\DataTypes\FileName\Tests;
 
 use Elavora\Api\DataTypes\Filesystem\FileName;
+use Elavora\Api\Framework\Contracts\DescribesType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Regras de docs/USO.md ("Caracteres de controle e de formatação" e "Cenários de aceite (caracteres de controle)").
+ * Regras de docs/USO.md ("Caracteres de controle e de formatação", "Cenários de aceite (caracteres de controle)"
+ * e "Documentação do tipo (OPTIONS)").
  *
  * Os testes de valores inválidos falham enquanto a validação ainda aceita caracteres de controle.
  */
@@ -125,6 +127,8 @@ final class FileNameControlCharactersTest extends TestCase
         yield 'CJK' => ['日本語.txt'];
         yield 'acento' => ['relatório.pdf'];
         yield 'espaco comum' => ['a b.txt'];
+        yield 'user.png' => ['user.png'];
+        yield 'a.tar.gz' => ['a.tar.gz'];
     }
 
     /** Cenário 12: limite em bytes. @return iterable<string, array{string, bool}> */
@@ -163,12 +167,12 @@ final class FileNameControlCharactersTest extends TestCase
     #[DataProvider('positionProvider')]
     #[DataProvider('spoofingProvider')]
     #[DataProvider('malformedUtf8Provider')]
-    public function testFromThrowsForControlAndFormattingCharacters(string $value): void
+    public function testConstructorThrowsForControlAndFormattingCharacters(string $value): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(self::MESSAGE);
 
-        FileName::from($value);
+        new FileName($value);
     }
 
     #[DataProvider('validProvider')]
@@ -178,14 +182,37 @@ final class FileNameControlCharactersTest extends TestCase
     }
 
     #[DataProvider('validProvider')]
-    public function testFromKeepsInvisibleAndScriptCharactersWithoutChange(string $value): void
+    public function testConstructorKeepsInvisibleAndScriptCharactersWithoutChange(string $value): void
     {
-        self::assertSame($value, FileName::from($value)->value());
+        self::assertSame($value, (new FileName($value))->value());
     }
 
     #[DataProvider('byteLimitProvider')]
     public function testByteLimitIsCountedInBytes(string $value, bool $expected): void
     {
         self::assertSame($expected, FileName::isValid($value));
+    }
+
+    public function testIsValidKeepsBoolReturnType(): void
+    {
+        $returnType = (new \ReflectionMethod(FileName::class, 'isValid'))->getReturnType();
+
+        self::assertInstanceOf(\ReflectionNamedType::class, $returnType);
+        self::assertSame('bool', $returnType->getName());
+    }
+
+    public function testDocumentedTypeDescriptionMentionsControlCharacters(): void
+    {
+        self::assertTrue(is_a(FileName::class, DescribesType::class, true));
+
+        $method = new \ReflectionMethod(FileName::class, 'documentedType');
+        $documented = $method->isStatic()
+            ? $method->invoke(null)
+            : $method->invoke(new FileName('user.png'));
+
+        self::assertIsArray($documented);
+        self::assertArrayHasKey('description', $documented);
+        self::assertIsString($documented['description']);
+        self::assertStringContainsString('caracteres de controle', $documented['description']);
     }
 }
